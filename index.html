@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"> <!-- مهم للجوال -->
+<title>موافقة ولي أمر</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page-pad: 20px;
+    --page-border: 3px;
+    --font-base: clamp(14px, 2.2vw, 18px);
+    --font-h3: clamp(13px, 2vw, 16px);
+    --font-h2: clamp(16px, 2.6vw, 22px);
+    --input-bg: #e6f3ff; /* أزرق فاتح للواجهة */
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:'Cairo', sans-serif;
+    margin:0;
+    background:#fff;
+    color:#000;
+    line-height:1.6;
+    font-size:var(--font-base);
+    padding: 8px;
+  }
+
+  /* صفحة بإطار وتوسيط مناسب */
+  .page{
+    border: var(--page-border) solid #000;
+    padding: var(--page-pad);
+    max-width: 900px;       /* يحد العرض على الشاشات الواسعة */
+    margin: 8px auto;
+    background:#fff;
+  }
+
+  /* رأس الصفحة متجاوب Grid */
+  .header{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: "right center left";
+    align-items:start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .right-text{ grid-area: right; text-align:right }
+  .center-logo{ grid-area: center; text-align:center }
+  .left-logo{ grid-area: left; text-align:left }
+  .right-text h3{ margin:0; font-size:var(--font-h3) }
+
+  .center-logo img{ max-width: 120px; height:auto }
+  .left-logo img{ max-width: 70px; height:auto } /* شعار المدرسة أصغر */
+
+  .upload-btn{ margin-top:4px }
+
+  .content{ margin-top:10px }
+  h2{ text-align:center; margin:6px 0; font-size:var(--font-h2) }
+
+  .divider{
+    border:none;
+    border-top:2px solid #000;
+    margin: 8px 0 14px 0;
+  }
+
+  /* الحقول بالواجهة */
+  input, select, textarea{
+    font-family:'Cairo', sans-serif;
+    font-size:1em;
+    padding:6px 8px;
+    margin:2px 0;
+    background-color: var(--input-bg);
+    border:none;
+    border-radius:6px;
+    vertical-align:baseline;
+  }
+
+  /* حقول قصيرة تُستخدم داخل السطر */
+  .inline{
+    display:inline-block;
+    min-width: 110px;
+    max-width: 260px;
+  }
+
+  /* مجموعة الأزرار */
+  .radio-group{ margin:10px 0 }
+  .signature{
+    margin-top: 20px;
+    display:flex;
+    gap:10px;
+    justify-content:space-between;
+    flex-wrap:wrap;
+  }
+  .footer{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  .print-btn{
+    margin-top:14px;
+    padding:10px 16px;
+    font-size:1em;
+    cursor:pointer;
+  }
+
+  /* تحسينات للجوال */
+  @media (max-width: 640px){
+    body{ padding:6px }
+    .page{
+      padding: 14px;
+      border-width: 2px;
+      margin: 0;
+      border-radius: 8px;
+    }
+    .header{
+      /* ترتيب أسهل على الجوال: الشعار الوزاري أولاً بالوسط، ثم النص يمين، ثم شعار المدرسة يسار */
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "center"
+        "right"
+        "left";
+      text-align:center;
+    }
+    .right-text{ text-align:right }
+    .left-logo{ text-align:left }
+    .center-logo img{ max-width: 110px }
+    .left-logo img{ max-width: 64px }
+
+    /* الحقول تمتد للعرض عند الحاجة */
+    .inline{ min-width: 100%; display:block }
+    .signature{ flex-direction:column; align-items:stretch }
+  }
+
+  /* الطباعة: إخفاء كل ما هو تفاعلي وإزالة ألوان/حدود الحقول، مع الإطار */
+  @media print{
+    @page{ margin: 10mm }
+    .print-btn, .upload-btn{ display:none !important }
+    input, select, textarea{
+      border:none !important;
+      outline:none !important;
+      box-shadow:none !important;
+      background:transparent !important;
+    }
+    .page{ border:2px solid #000 }
+  }
+</style>
+
+<meta name="theme-color" content="#007AFF">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+</head>
+<body>
+
+  <div class="page">
+    <div class="header">
+      <!-- يمين: النصوص -->
+      <div class="right-text">
+        <h3>المملكة العربية السعودية</h3>
+        <h3>وزارة التعليم</h3>
+        <h3>الإدارة العامة للتعليم بمنطقة الباحة</h3>
+        <h3>مدرسة بدر المتوسطة والثانوية</h3>
+      </div>
+
+      <!-- الوسط: شعار الوزارة -->
+      <div class="center-logo">
+        <img id="ministryLogo" src="" alt="شعار الوزارة">
+        <br>
+        <input type="file" accept="image/*" class="upload-btn" onchange="previewLogo(event, 'ministryLogo')">
+      </div>
+
+      <!-- اليسار: شعار المدرسة (أصغر) -->
+      <div class="left-logo">
+        <img id="schoolLogo" src="" alt="شعار المدرسة">
+        <br>
+        <input type="file" accept="image/*" class="upload-btn" onchange="previewLogo(event, 'schoolLogo')">
+      </div>
+    </div>
+
+    <div class="content">
+      <h2>موافقة ولي أمر طالب لمشاركة ابنه في النشاط الطلابي</h2>
+      <hr class="divider">
+
+      <p>المكرم ولي أمر الطالب
+        <input type="text" class="inline" placeholder="اسم الطالب"> حفظه الله
+      </p>
+
+      <p>السلام عليكم ورحمة الله وبركاته وبعد:</p>
+
+      <p>
+        تعتزم المدرسة القيام بــ
+        <select class="inline">
+          <option>رحلة</option>
+          <option>زيارة</option>
+          <option>مشاركة</option>
+        </select>
+        في
+        <input type="text" class="inline" placeholder="جهة/مكان البرنامج">
+      </p>
+
+      <p>
+        البرنامج يوم
+        <input type="text" class="inline" placeholder="اليوم/التاريخ">
+        الموافق
+        <input type="text" class="inline" placeholder="التاريخ الهجري"> هـ
+        من الساعة
+        <input type="text" class="inline" placeholder="بداية البرنامج">
+        إلى الساعة
+        <input type="text" class="inline" placeholder="نهاية البرنامج">
+      </p>
+
+      <p>
+        وقد تم ترشيح ابنكم ضمن الطلاب المشاركين في هذا النشاط وعليه نأمل موافاتنا بموافقتكم أو عدمها ليتسنى لنا إجراء اللازم.
+      </p>
+
+      <div class="radio-group">
+        <label><input type="radio" name="approval"> موافق</label>
+        <label><input type="radio" name="approval"> غير موافق</label>
+      </div>
+
+      <p>
+        اسم ولي الأمر:
+        <input type="text" class="inline" placeholder="اسم ولي الأمر">
+        &nbsp;&nbsp;&nbsp; التوقيع:
+        <input type="text" class="inline" placeholder="التوقيع">
+      </p>
+
+      <div class="signature">
+        <p>مشرف النشاط: <input type="text" class="inline" placeholder="اسم مشرف النشاط"></p>
+        <p>مدير المدرسة: <input type="text" class="inline" placeholder="اسم المدير"></p>
+      </div>
+
+      <div class="footer">
+        <p>الختم</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
+
+  <script>
+    function previewLogo(event, elementId){
+      const file = event.target.files && event.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(){
+        const img = document.getElementById(elementId);
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+</script>
+
+</body>
+</html>
